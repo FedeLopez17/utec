@@ -61,7 +61,6 @@ public class Proyecto3 {
             }
 
             arrMascotas[i] = new Mascota(id, nombre, cantidadDePatas);
-            System.out.println(arrMascotas[i].nombre);
             System.out.println("¡Mascota agregada correctamente!");
             System.out.println("______________________________________________");
         }
