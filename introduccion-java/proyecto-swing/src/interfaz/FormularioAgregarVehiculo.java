@@ -107,14 +107,8 @@ public class FormularioAgregarVehiculo {
         agregarEventListeners();
         marco = new JFrame();
         marco.setContentPane(this.panelPrincipal);
-        marco.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        marco.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         marco.pack();
-        try {
-            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-        } catch (ClassNotFoundException | InstantiationException
-                 | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            ex.printStackTrace();
-        }
         marco.setLocationRelativeTo(null);
         marco.setSize(400, 650);
         marco.setVisible(true);

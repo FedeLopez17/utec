@@ -1,7 +1,6 @@
 package entidades.vehiculos;
 
 public class Auto extends Vehiculo{
-
     String marca;
     byte cantPuertas;
 

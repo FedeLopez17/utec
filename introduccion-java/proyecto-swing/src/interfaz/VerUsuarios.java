@@ -5,6 +5,8 @@ import entidades.personas.Persona;
 import entidades.vehiculos.ListaVehiculos;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -14,9 +16,17 @@ public class VerUsuarios {
     private JPanel panelPrincipal;
     private JTable tablaUsuarios;
     private JScrollPane panelTablaUsuarios;
-    private JLabel tituloUsuarios;
-    private JPanel wrapperTitulo;
     private JPanel wrapperPanelTablaUsuarios;
+    private JPanel wrapperBarraBusqueda;
+    private JTextField barraBusqueda;
+    private JPanel wrapperInternoBarra;
+
+    private ListaUsuarios listaDeUsuarios;
+
+    public VerUsuarios(ListaUsuarios listaDeUsuarios){
+        agregarListenerBarra();
+        this.listaDeUsuarios = listaDeUsuarios;
+    }
 
     public void refrezcarTabla(ListaUsuarios listaDeUsuarios){
         DefaultTableModel modeloTabla = new DefaultTableModel(null, new String[] {"ID", "Nombre", "Apellido", "Departamento", "Número de hijos", "Fecha de nacimiento", "Vehículos"}){
@@ -80,6 +90,58 @@ public class VerUsuarios {
 
     public JPanel getPanelPrincipal(){
         return this.panelPrincipal;
+    }
+
+    private void agregarListenerBarra(){
+        this.barraBusqueda.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filtrarTabla(barraBusqueda.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filtrarTabla(barraBusqueda.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {}
+        });
+    }
+
+    private boolean esCoincidente(String palabra, String porcion){
+        String porcionPalabraOriginal = palabra.substring(0, porcion.length());
+        return porcionPalabraOriginal.equalsIgnoreCase(porcion);
+    }
+
+    private void filtrarTabla(String valorBusqueda){
+        if(valorBusqueda.isEmpty()){
+            refrezcarTabla(this.listaDeUsuarios);
+        } else {
+            ListaUsuarios encontrados = new ListaUsuarios();
+            try{
+                int idBusqueda = Integer.parseInt(valorBusqueda);
+                for(Persona usuario : this.listaDeUsuarios.getUsuarios()){
+                    if(usuario.getId() == idBusqueda){
+                        encontrados.add(usuario);
+                    }
+                }
+            } catch(NumberFormatException e){
+                String busqueda = valorBusqueda;
+                for(Persona usuario : this.listaDeUsuarios.getUsuarios()){
+
+                    String[] columnasTexto = {usuario.getNombre(), usuario.getApellido(), usuario.getDptoResidencia()};
+                    for(String valorColumna : columnasTexto){
+                        if(esCoincidente(valorColumna, valorBusqueda)){
+                            encontrados.add(usuario);
+                            break;
+                        }
+                    }
+                }
+            } finally {
+                refrezcarTabla(encontrados);
+            }
+        }
     }
 }
 
